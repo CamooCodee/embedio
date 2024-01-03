@@ -40,6 +40,10 @@ namespace EmbedIO.Actions
 
         /// <inheritdoc />
         public override bool IsFinalHandler => false;
+        /// <summary>
+        /// Indicating whether this <see cref="ActionModule"/> blocks further handlers.
+        /// </summary>
+        public virtual bool BlockFurtherHandlers { get; set; } = true;
 
         /// <inheritdoc />
         protected override async Task OnRequestAsync(IHttpContext context)
@@ -48,7 +52,8 @@ namespace EmbedIO.Actions
                 return;
 
             await _handler(context).ConfigureAwait(false);
-            context.SetHandled();
+            if (BlockFurtherHandlers)
+                context.SetHandled();
         }
     }
 }
